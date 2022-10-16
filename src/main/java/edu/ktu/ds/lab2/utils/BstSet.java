@@ -89,7 +89,12 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
      */
     @Override
     public boolean containsAll(Set<E> set) {
-        throw new UnsupportedOperationException("Studentams reikia realizuoti containsAll(Set<E> set)");
+//        throw new UnsupportedOperationException("Studentams reikia realizuoti containsAll(Set<E> set)");
+        for (E s : set){
+            if (!contains(s))
+                return false;
+        }
+        return true;
     }
 
     /**
