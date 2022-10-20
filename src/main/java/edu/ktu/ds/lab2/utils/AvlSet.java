@@ -72,11 +72,35 @@ public class AvlSet<E extends Comparable<E>> extends BstSet<E> implements Sorted
      */
     @Override
     public void remove(E element) {
-        throw new UnsupportedOperationException("Studentams reikia realizuoti remove(E element)");
+//        throw new UnsupportedOperationException("Studentams reikia realizuoti remove(E element)");
+        if (element == null) {
+            throw new IllegalArgumentException("Element is null in remove(E element)");
+        }
+
+        root = removeRecursive(element, (AVLNode<E>) root);
     }
 
     private AVLNode<E> removeRecursive(E element, AVLNode<E> n) {
-        throw new UnsupportedOperationException("Studentams reikia realizuoti removeRecursive(E element, AVLNode<E> n)");
+//        throw new UnsupportedOperationException("Studentams reikia realizuoti removeRecursive(E element, AVLNode<E> n)");
+        if (n == null) {
+            return n;
+        }
+        int cmp = c.compare(element, n.element);
+
+        if (cmp < 0) {
+            n.left = removeRecursive(element, (AVLNode<E>) n.left);
+        } else if (cmp > 0) {
+            n.right = removeRecursive(element, (AVLNode<E>) n.right);
+        } else if (n.left != null && n.right != null) {
+            BstNode<E> nodeMax = getMax(n.left);
+            n.element = nodeMax.element;
+            n.left = removeMax(n.left);
+            size--;
+        } else {
+            n = ((AVLNode<E>) n.left != null) ? (AVLNode<E>) n.left : (AVLNode<E>) n.right;
+            size--;
+        }
+        return n;
     }
 
     // Papildomi privatūs metodai, naudojami operacijų su aibe realizacijai
