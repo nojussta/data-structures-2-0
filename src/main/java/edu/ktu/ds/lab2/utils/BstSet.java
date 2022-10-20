@@ -90,11 +90,24 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
     @Override
     public boolean containsAll(Set<E> set) {
 //        throw new UnsupportedOperationException("Studentams reikia realizuoti containsAll(Set<E> set)");
-        for (E s : set){
-            if (!contains(s))
-                return false;
+//        for (E s : set){
+////            if (!contains(s))
+////                return false;
+////        }
+////        return true;
+        if (set == null) {
+            throw new UnsupportedOperationException("Duotasis medis yra tuscias");
         }
-        return true;
+        if (root == null) {
+            throw new UnsupportedOperationException("Medis yra tuscias");
+        }
+        boolean containsAll = true;
+        for (E element : set) {
+            if (!this.contains(element)) {
+                containsAll = false;
+            }
+        }
+        return containsAll;
     }
 
     /**
@@ -145,7 +158,12 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
      */
     @Override
     public void remove(E element) {
-        throw new UnsupportedOperationException("Studentams reikia realizuoti remove(E element)");
+//        throw new UnsupportedOperationException("Studentams reikia realizuoti remove(E element)");
+        if (element == null) {
+            throw new IllegalArgumentException("Element is null in remove(E element)");
+        }
+
+        root = removeRecursive(element, root);
     }
 
     /**
@@ -159,7 +177,40 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
     }
 
     private BstNode<E> removeRecursive(E element, BstNode<E> node) {
-        throw new UnsupportedOperationException("Studentams reikia realizuoti removeRecursive(E element, BstNode<E> n)");
+//        throw new UnsupportedOperationException("Studentams reikia realizuoti removeRecursive(E element, BstNode<E> n)");
+        if (node == null) {
+            return node;
+        }
+        // Medyje ieškomas šalinamas elemento mazgas;
+        int cmp = c.compare(element, node.element);
+
+        if (cmp < 0) {
+            node.left = removeRecursive(element, node.left);
+        } else if (cmp > 0) {
+            node.right = removeRecursive(element, node.right);
+        } else if (node.left != null && node.right != null) {
+            /* Atvejis kai šalinamas elemento mazgas turi abu vaikus.
+             Ieškomas didžiausio rakto elemento mazgas kairiajame pomedyje.
+             Galima kita realizacija kai ieškomas mažiausio rakto
+             elemento mazgas dešiniajame pomedyje. Tam yra sukurtas
+             metodas getMin(E element);
+             */
+            BstNode<E> nodeMax = getMax(node.left);
+            /* Didžiausio rakto elementas (TIK DUOMENYS!) perkeliamas į šalinamo
+             elemento mazgą. Pats mazgas nėra pašalinamas - tik atnaujinamas;
+             */
+            node.element = nodeMax.element;
+            // Surandamas ir pašalinamas maksimalaus rakto elemento mazgas;
+            node.left = removeMax(node.left);
+            size--;
+            // Kiti atvejai
+        } else {
+            node = (node.left != null) ? node.left : node.right;
+            size--;
+        }
+
+        return node;
+
     }
 
     private E get(E element) {
@@ -181,6 +232,42 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
         }
 
         return null;
+    }
+
+    /**
+     * Pašalina maksimalaus rakto elementą paiešką pradedant mazgu node
+     *
+     * @param node
+     * @return
+     */
+    BstNode<E> removeMax(BstNode<E> node) {
+        if (node == null) {
+            return null;
+        } else if (node.right != null) {
+            node.right = removeMax(node.right);
+            return node;
+        } else {
+            return node.left;
+        }
+    }
+
+    /**
+     * Grąžina maksimalaus rakto elementą paiešką pradedant mazgu node
+     *
+     * @param node
+     * @return
+     */
+    BstNode<E> getMax(BstNode<E> node) {
+        return get(node, true);
+    }
+
+    private BstNode<E> get(BstNode<E> node, boolean findMax) {
+        BstNode<E> parent = null;
+        while (node != null) {
+            parent = node;
+            node = (findMax) ? node.right : node.left;
+        }
+        return parent;
     }
 
     /**
@@ -234,8 +321,7 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
     @Override
     public String toVisualizedString(String dataCodeDelimiter) {
         horizontal = term[0] + term[0];
-        return root == null ? ">" + horizontal
-                : toTreeDraw(root, ">", "", dataCodeDelimiter);
+        return root == null ? ">" + horizontal : toTreeDraw(root, ">", "", dataCodeDelimiter);
     }
 
     private String toTreeDraw(BstNode<E> node, String edge, String indent, String dataCodeDelimiter) {
@@ -247,8 +333,7 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
         sb.append(toTreeDraw(node.right, rightEdge, indent + step, dataCodeDelimiter));
         int t = (node.right != null) ? 1 : 0;
         t = (node.left != null) ? t + 2 : t;
-        sb.append(indent).append(edge).append(horizontal).append(term[t]).append(endEdge).append(
-                split(node.element.toString(), dataCodeDelimiter)).append(System.lineSeparator());
+        sb.append(indent).append(edge).append(horizontal).append(term[t]).append(endEdge).append(split(node.element.toString(), dataCodeDelimiter)).append(System.lineSeparator());
         step = (edge.equals(rightEdge)) ? vertical : "   ";
         sb.append(toTreeDraw(node.left, leftEdge, indent + step, dataCodeDelimiter));
         return sb.toString();
