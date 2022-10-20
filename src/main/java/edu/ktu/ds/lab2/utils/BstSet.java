@@ -189,7 +189,6 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
         if (node == null) {
             return node;
         }
-        // Medyje ieškomas šalinamas elemento mazgas;
         int cmp = c.compare(element, node.element);
 
         if (cmp < 0) {
@@ -197,21 +196,10 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
         } else if (cmp > 0) {
             node.right = removeRecursive(element, node.right);
         } else if (node.left != null && node.right != null) {
-            /* Atvejis kai šalinamas elemento mazgas turi abu vaikus.
-             Ieškomas didžiausio rakto elemento mazgas kairiajame pomedyje.
-             Galima kita realizacija kai ieškomas mažiausio rakto
-             elemento mazgas dešiniajame pomedyje. Tam yra sukurtas
-             metodas getMin(E element);
-             */
             BstNode<E> nodeMax = getMax(node.left);
-            /* Didžiausio rakto elementas (TIK DUOMENYS!) perkeliamas į šalinamo
-             elemento mazgą. Pats mazgas nėra pašalinamas - tik atnaujinamas;
-             */
             node.element = nodeMax.element;
-            // Surandamas ir pašalinamas maksimalaus rakto elemento mazgas;
             node.left = removeMax(node.left);
             size--;
-            // Kiti atvejai
         } else {
             node = (node.left != null) ? node.left : node.right;
             size--;
@@ -456,28 +444,21 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
         while (element1Branch != null) {
             int cmp = c.compare(element2, element1Branch.element);
             if (cmp < 0) {
-                if (from)
-                    subset.add(element1Branch.element);
-                else
-                    from = true;
+                if (from) subset.add(element1Branch.element);
+                else from = true;
                 element1Branch = element1Branch.left;
             } else if (cmp > 0) {
-                if (from)
-                    subset.add(element1Branch.element);
-                else
-                    from = true;
+                if (from) subset.add(element1Branch.element);
+                else from = true;
                 element1Branch = element1Branch.right;
             } else if (cmp == 0) {
-                if (to)
-                    subset.add(element1Branch.element);
+                if (to) subset.add(element1Branch.element);
                 flagFound = true;
                 element1Branch = null;
             }
         }
-        if (flagFound)
-            return subset;
-        else
-            throw new UnsupportedOperationException("Nepavyko sudaryti poaibio tarp 1 ir 2 elementu!");
+        if (flagFound) return subset;
+        else throw new UnsupportedOperationException("Nepavyko sudaryti poaibio tarp 1 ir 2 elementu!");
     }
 
     /**
