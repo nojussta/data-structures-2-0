@@ -186,25 +186,47 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
 
     private BstNode<E> removeRecursive(E element, BstNode<E> node) {
 //        throw new UnsupportedOperationException("Studentams reikia realizuoti removeRecursive(E element, BstNode<E> n)");
-        if (node == null) {
+//        if (node == null) {
+//            return node;
+//        }
+//        int cmp = c.compare(element, node.element);
+//
+//        if (cmp < 0) {
+//            node.left = removeRecursive(element, node.left);
+//        } else if (cmp > 0) {
+//            node.right = removeRecursive(element, node.right);
+//        } else if (node.left != null && node.right != null) {
+//            BstNode<E> nodeMax = getMax(node.left);
+//            node.element = nodeMax.element;
+//            node.left = removeMax(node.left);
+//            size--;
+//        } else {
+//            node = (node.left != null) ? node.left : node.right;
+//            size--;
+//        }
+//
+//        return node;
+        if(node == null) return node;
+        if(element == root.element){
+            root = (node.left != null) ? node.left : node.right;
             return node;
         }
         int cmp = c.compare(element, node.element);
-
-        if (cmp < 0) {
+        if(cmp < 0){
             node.left = removeRecursive(element, node.left);
-        } else if (cmp > 0) {
+        }
+        else if(cmp > 0){
             node.right = removeRecursive(element, node.right);
-        } else if (node.left != null && node.right != null) {
+        }
+        else if(node.left != null && node.right != null){
             BstNode<E> nodeMax = getMax(node.left);
+
             node.element = nodeMax.element;
             node.left = removeMax(node.left);
-            size--;
-        } else {
-            node = (node.left != null) ? node.left : node.right;
-            size--;
         }
-
+        else {
+            node = (node.left != null) ? node.left : node.right;
+        }
         return node;
 
     }
@@ -255,10 +277,6 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
      */
     BstNode<E> getMax(BstNode<E> node) {
         return get(node, true);
-    }
-
-    BstNode<E> getMin(BstNode<E> node) {
-        return get(node, false);
     }
 
     private BstNode<E> get(BstNode<E> node, boolean findMax) {
