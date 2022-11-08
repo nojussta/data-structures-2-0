@@ -95,19 +95,23 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
 ////                return false;
 ////        }
 ////        return true;
-        if (set == null) {
-            throw new UnsupportedOperationException("Duotasis medis yra tuscias");
+//        if (set == null) {
+//            throw new UnsupportedOperationException("Duotasis medis yra tuscias");
+//        }
+//        if (root == null) {
+//            throw new UnsupportedOperationException("Medis yra tuscias");
+//        }
+//        boolean containsAll = true;
+//        for (E element : set) {
+//            if (!this.contains(element)) {
+//                containsAll = false;
+//            }
+//        }
+//        return containsAll;
+        for (E element : set){
+            if(!contains(element)) return false;
         }
-        if (root == null) {
-            throw new UnsupportedOperationException("Medis yra tuscias");
-        }
-        boolean containsAll = true;
-        for (E element : set) {
-            if (!this.contains(element)) {
-                containsAll = false;
-            }
-        }
-        return containsAll;
+        return true;
     }
 
     /**
@@ -120,8 +124,8 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
         if (element == null) {
             throw new IllegalArgumentException("Element is null in add(E element)");
         }
-
         root = addRecursive(element, root);
+        size++;
     }
 
     /**
@@ -131,12 +135,16 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
      */
     @Override
     public void addAll(Set<E> set) {
-        throw new UnsupportedOperationException("Studentams reikia realizuoti addAll(Set<E> set)");
+//        throw new UnsupportedOperationException("Studentams reikia realizuoti addAll(Set<E> set)");
+        for (E element : set) {
+            root = addRecursive(element, root);
+            size++;
+        }
     }
 
     private BstNode<E> addRecursive(E element, BstNode<E> node) {
         if (node == null) {
-            size++;
+
             return new BstNode<>(element);
         }
 
@@ -162,8 +170,8 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
         if (element == null) {
             throw new IllegalArgumentException("Element is null in remove(E element)");
         }
-
-        root = removeRecursive(element, root);
+        removeRecursive(element, root);
+        size--;
     }
 
     /**
@@ -174,13 +182,20 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
     @Override
     public void retainAll(Set<E> set) {
 //        throw new UnsupportedOperationException("Studentams reikia realizuoti retainAll(Set<E> set)");
-        Iterator iterator = iterator();
-        E current = root.element;
-        while (current != null) {
-            if (!set.contains(current)) {
-                remove(current);
+//        Iterator iterator = iterator();
+//        E current = root.element;
+//        while (current != null) {
+//            if (!set.contains(current)) {
+//                remove(current);
+//            }
+//            current = (E) iterator.next();
+//        }
+        BstSet<E> bstSet = (BstSet<E>) set;
+        Object[] elements = toArray();
+        for (Object element : elements) {
+            if (bstSet.get((E) element) == null) {
+                remove((E) element);
             }
-            current = (E) iterator.next();
         }
     }
 
@@ -206,25 +221,22 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
 //        }
 //
 //        return node;
-        if(node == null) return node;
-        if(element == root.element){
+        if (node == null) return node;
+        if (element == root.element) {
             root = (node.left != null) ? node.left : node.right;
             return node;
         }
         int cmp = c.compare(element, node.element);
-        if(cmp < 0){
+        if (cmp < 0) {
             node.left = removeRecursive(element, node.left);
-        }
-        else if(cmp > 0){
+        } else if (cmp > 0) {
             node.right = removeRecursive(element, node.right);
-        }
-        else if(node.left != null && node.right != null){
+        } else if (node.left != null && node.right != null) {
             BstNode<E> nodeMax = getMax(node.left);
 
             node.element = nodeMax.element;
             node.left = removeMax(node.left);
-        }
-        else {
+        } else {
             node = (node.left != null) ? node.left : node.right;
         }
         return node;
@@ -235,7 +247,6 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
         if (element == null) {
             throw new IllegalArgumentException("Element is null in get(E element)");
         }
-
         BstNode<E> node = root;
         while (node != null) {
             int cmp = c.compare(element, node.element);
@@ -250,6 +261,25 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
         }
 
         return null;
+    }
+
+    BstNode<E> get(BstNode<E> node) {
+        BstNode<E> parent = null;
+        while (node != null) {
+            parent = node;
+            node = node.right;
+        }
+        return parent;
+    }
+
+    /**
+     * Grąžina maksimalaus rakto elementą paiešką pradedant mazgu node
+     *
+     * @param node
+     * @return
+     */
+    BstNode<E> getMax(BstNode<E> node) {
+        return get(node);
     }
 
     /**
@@ -267,25 +297,6 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
         } else {
             return node.left;
         }
-    }
-
-    /**
-     * Grąžina maksimalaus rakto elementą paiešką pradedant mazgu node
-     *
-     * @param node
-     * @return
-     */
-    BstNode<E> getMax(BstNode<E> node) {
-        return get(node, true);
-    }
-
-    private BstNode<E> get(BstNode<E> node, boolean findMax) {
-        BstNode<E> parent = null;
-        while (node != null) {
-            parent = node;
-            node = (findMax) ? node.right : node.left;
-        }
-        return parent;
     }
 
     /**

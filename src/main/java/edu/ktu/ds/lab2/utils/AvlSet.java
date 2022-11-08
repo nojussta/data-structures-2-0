@@ -76,7 +76,9 @@ public class AvlSet<E extends Comparable<E>> extends BstSet<E> implements Sorted
         if (element == null) {
             throw new IllegalArgumentException("Element is null in remove(E element)");
         }
-
+        if (size <= 0) {
+            throw new IllegalArgumentException("Set is empty");
+        }
         root = removeRecursive(element, (AVLNode<E>) root);
     }
 
@@ -88,17 +90,39 @@ public class AvlSet<E extends Comparable<E>> extends BstSet<E> implements Sorted
         int cmp = c.compare(element, n.element);
 
         if (cmp < 0) {
-            n.left = removeRecursive(element, (AVLNode<E>) n.left);
+            n.setLeft(removeRecursive(element, n.getLeft()));
+            if (height(n.getRight()) - height(n.getLeft()) == 2) {
+                if (height(n.getRight().getLeft()) > height(n.getRight().getRight())) {
+                    n = doubleLeftRotation(n);
+                } else {
+                    n = leftRotation(n);
+                }
+            }
         } else if (cmp > 0) {
-            n.right = removeRecursive(element, (AVLNode<E>) n.right);
-        } else if (n.left != null && n.right != null) {
-            BstNode<E> nodeMax = getMax(n.left);
-            n.element = nodeMax.element;
-            n.left = removeMax(n.left);
+            n.setRight(removeRecursive(element, n.getRight()));
+            if (height(n.getLeft()) - height(n.getRight()) == 2) {
+                if (height(n.getLeft().getLeft()) > height(n.getLeft().getRight())) {
+                    n = rightRotation(n);
+                } else {
+                    n = doubleRightRotation(n);
+                }
+            }
+        } else if (n.getLeft() != null && n.getRight() != null) {
+            n.element = ((AVLNode<E>) getMax(n.getLeft())).element;
+            n.setLeft(removeRecursive(n.element, n.getLeft()));
+            if (height(n.getRight()) - height(n.getLeft()) == 2) {
+                if (height(n.getRight().getLeft()) > height(n.getRight().getRight())) {
+                    n = doubleLeftRotation(n);
+                } else {
+                    n = leftRotation(n);
+                }
+            }
+        } else {// Kiti atvejai
+            n = (n.getLeft() != null) ? n.getLeft() : n.getRight();
             size--;
-        } else {
-            n = ((AVLNode<E>) n.left != null) ? (AVLNode<E>) n.left : (AVLNode<E>) n.right;
-            size--;
+        }
+        if (n != null) {
+            n.height = Math.max(height(n.getLeft()), height(n.getRight())) + 1;
         }
         return n;
     }

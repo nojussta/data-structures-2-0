@@ -38,8 +38,8 @@ public class Benchmark {
         }
     }
 
-//    @Param({"10000", "20000", "40000", "80000"})
-@Param({"10000", "20000", "40000", "80000", "200000", "2000000"})
+    //    @Param({"10000", "20000", "40000", "80000"})
+    @Param({"10000", "20000", "40000", "80000", "200000", "2000000"})
     public int elementCount;
 
     Car[] cars;
@@ -53,7 +53,7 @@ public class Benchmark {
         return new CarsGenerator().generateShuffle(count, 1.0);
     }
 
-//    @org.openjdk.jmh.annotations.Benchmark
+    //    @org.openjdk.jmh.annotations.Benchmark
     public BstSet<Car> addBstRecursive() {
         BstSet<Car> carSet = new BstSet<>(Car.byPrice);
         addElements(cars, carSet);
