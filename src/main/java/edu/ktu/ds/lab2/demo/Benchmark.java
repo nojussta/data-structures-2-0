@@ -24,7 +24,7 @@ public class Benchmark {
     public static class FullSet {
 
         Car[] cars;
-        BstSet<Car> carSet;
+        AvlSet<Car> carSet;
 
         @Setup(Level.Iteration)
         public void generateElements(BenchmarkParams params) {
@@ -33,7 +33,7 @@ public class Benchmark {
 
         @Setup(Level.Invocation)
         public void fillCarSet(BenchmarkParams params) {
-            carSet = new BstSet<>();
+            carSet = new AvlSet<>();
             addElements(cars, carSet);
         }
     }
@@ -54,11 +54,11 @@ public class Benchmark {
     }
 
     //    @org.openjdk.jmh.annotations.Benchmark
-    public BstSet<Car> addBstRecursive() {
-        BstSet<Car> carSet = new BstSet<>(Car.byPrice);
-        addElements(cars, carSet);
-        return carSet;
-    }
+//    public BstSet<Car> addBstRecursive() {
+//        BstSet<Car> carSet = new BstSet<>(Car.byPrice);
+//        addElements(cars, carSet);
+//        return carSet;
+//    }
 
 //    @org.openjdk.jmh.annotations.Benchmark
 //    public BstSetIterative<Car> addBstIterative() {
@@ -67,12 +67,12 @@ public class Benchmark {
 //        return carSet;
 //    }
 //
-//    @org.openjdk.jmh.annotations.Benchmark
-//    public AvlSet<Car> addAvlRecursive() {
-//        AvlSet<Car> carSet = new AvlSet<>(Car.byPrice);
-//        addElements(cars, carSet);
-//        return carSet;
-//    }
+    @org.openjdk.jmh.annotations.Benchmark
+    public AvlSet<Car> addAvlRecursive() {
+        AvlSet<Car> carSet = new AvlSet<>(Car.byPrice);
+        addElements(cars, carSet);
+        return carSet;
+    }
 
     @org.openjdk.jmh.annotations.Benchmark
     public void removeBst(FullSet carSet) {
