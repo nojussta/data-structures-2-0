@@ -90,24 +90,6 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
     @Override
     public boolean containsAll(Set<E> set) {
 //        throw new UnsupportedOperationException("Studentams reikia realizuoti containsAll(Set<E> set)");
-//        for (E s : set){
-////            if (!contains(s))
-////                return false;
-////        }
-////        return true;
-//        if (set == null) {
-//            throw new UnsupportedOperationException("Duotasis medis yra tuscias");
-//        }
-//        if (root == null) {
-//            throw new UnsupportedOperationException("Medis yra tuscias");
-//        }
-//        boolean containsAll = true;
-//        for (E element : set) {
-//            if (!this.contains(element)) {
-//                containsAll = false;
-//            }
-//        }
-//        return containsAll;
         for (E element : set){
             if(!contains(element)) return false;
         }
@@ -182,14 +164,6 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
     @Override
     public void retainAll(Set<E> set) {
 //        throw new UnsupportedOperationException("Studentams reikia realizuoti retainAll(Set<E> set)");
-//        Iterator iterator = iterator();
-//        E current = root.element;
-//        while (current != null) {
-//            if (!set.contains(current)) {
-//                remove(current);
-//            }
-//            current = (E) iterator.next();
-//        }
         BstSet<E> bstSet = (BstSet<E>) set;
         Object[] elements = toArray();
         for (Object element : elements) {
@@ -201,26 +175,6 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
 
     private BstNode<E> removeRecursive(E element, BstNode<E> node) {
 //        throw new UnsupportedOperationException("Studentams reikia realizuoti removeRecursive(E element, BstNode<E> n)");
-//        if (node == null) {
-//            return node;
-//        }
-//        int cmp = c.compare(element, node.element);
-//
-//        if (cmp < 0) {
-//            node.left = removeRecursive(element, node.left);
-//        } else if (cmp > 0) {
-//            node.right = removeRecursive(element, node.right);
-//        } else if (node.left != null && node.right != null) {
-//            BstNode<E> nodeMax = getMax(node.left);
-//            node.element = nodeMax.element;
-//            node.left = removeMax(node.left);
-//            size--;
-//        } else {
-//            node = (node.left != null) ? node.left : node.right;
-//            size--;
-//        }
-//
-//        return node;
         if (node == null) return node;
         if (element == root.element) {
             root = (node.left != null) ? node.left : node.right;
