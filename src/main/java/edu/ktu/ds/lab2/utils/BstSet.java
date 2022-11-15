@@ -1,5 +1,7 @@
 package edu.ktu.ds.lab2.utils;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Stack;
@@ -90,8 +92,8 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
     @Override
     public boolean containsAll(Set<E> set) {
 //        throw new UnsupportedOperationException("Studentams reikia realizuoti containsAll(Set<E> set)");
-        for (E element : set){
-            if(!contains(element)) return false;
+        for (E element : set) {
+            if (!contains(element)) return false;
         }
         return true;
     }
@@ -473,6 +475,63 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
         subset.root = cloneRecursive(elementBranch.right);
         return subset;
     }
+
+    /**
+     * 1st task
+     *
+     * @param n
+     * @param currentNode
+     * @return
+     */
+    private int balanceHeight(int n, BstNode<E> currentNode) {
+        if (currentNode == null) {
+            return 0;
+        }
+
+        int leftSubtreeHeight = balanceHeight(n, currentNode.left);
+        if (leftSubtreeHeight == -1) return -1;
+
+        int rightSubtreeHeight = balanceHeight(n, currentNode.right);
+        if (rightSubtreeHeight == -1) return -1;
+
+        if (Math.abs(leftSubtreeHeight - rightSubtreeHeight) > n) {
+            return -1;
+        }
+
+        return Math.max(leftSubtreeHeight, rightSubtreeHeight) + 1;
+    }
+
+    public boolean checkBalance(int n, BstSet<E> tree) {
+        int result = balanceHeight(n, tree.root);
+        if (result == -1) {
+            return false;
+        } else return true;
+    }
+    // -----------END-----------//
+
+    /**
+     * 2nd task
+     * @param root
+     * @param goneLeft
+     * @param goneRight
+     * @param temp
+     */
+    public void findNonBoundaryNodesRec(BstNode<E> root, boolean goneLeft, boolean goneRight, BstSet<E> temp) {
+        if (root == null || (root.right == null && root.left == null))
+            return;
+        if (goneLeft && goneRight){
+            temp.add(root.element);
+        }
+        findNonBoundaryNodesRec(root.left, true, goneRight, temp);
+        findNonBoundaryNodesRec(root.right, goneLeft, true, temp);
+    }
+
+    public BstSet<E> findNonBoundaryNodes(){
+        BstSet<E> temp = new BstSet<>();
+        findNonBoundaryNodesRec(root, false, false, temp);
+        return temp;
+    }
+    // -----------END-----------//
 
     /**
      * Grąžinamas tiesioginis iteratorius.
