@@ -442,6 +442,7 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
                 element1Branch = null;
             }
         }
+
         if (flagFound) return subset;
         else throw new UnsupportedOperationException("Nepavyko sudaryti poaibio tarp 1 ir 2 elementu!");
     }
