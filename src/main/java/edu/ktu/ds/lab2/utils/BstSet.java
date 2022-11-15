@@ -511,6 +511,7 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
 
     /**
      * 2nd task
+     *
      * @param root
      * @param goneLeft
      * @param goneRight
@@ -519,14 +520,14 @@ public class BstSet<E extends Comparable<E>> implements SortedSet<E>, Cloneable 
     public void findNonBoundaryNodesRec(BstNode<E> root, boolean goneLeft, boolean goneRight, BstSet<E> temp) {
         if (root == null || (root.right == null && root.left == null))
             return;
-        if (goneLeft && goneRight){
+        if (goneLeft && goneRight) {
             temp.add(root.element);
         }
         findNonBoundaryNodesRec(root.left, true, goneRight, temp);
         findNonBoundaryNodesRec(root.right, goneLeft, true, temp);
     }
 
-    public BstSet<E> findNonBoundaryNodes(){
+    public BstSet<E> findNonBoundaryNodes() {
         BstSet<E> temp = new BstSet<>();
         findNonBoundaryNodesRec(root, false, false, temp);
         return temp;
